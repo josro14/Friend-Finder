@@ -13,6 +13,30 @@ module.exports = function(app) {
 // their input each in their own separate arrays
     app.post("/api/friends", function(req, res) {
         // pushes user's answers to an array stored in the friends.js file
-        friends.push(req.body);
+        
+        var myFriend = {name: req.body.name, photo: req.body.photo, scores: []};
+        for (var i = 1; i < 11; i++) {
+            myFriend.scores.push(req.body["q" + i]);
+        }
+
+        var lowestScore = Number.MAX_SAFE_INTEGER;
+        var bestMatch;
+        for (var i = 0; i < friends.length; i++) {
+            var comparison = compareFriends(myFriend, friends[i].scores);
+            if (comparison < lowestScore) {
+                bestMatch = friends[i];
+                lowestScore = comparison;
+            }
+        };
+        friends.push(myFriend);
+        res.status(200).send(bestMatch);
+        console.log(friends);
     });
+    function compareFriends(arr1, arr2) {
+        var totalDifference = 0;
+        for (var i = 0; i < arr1.length; i++) {
+            totalDifference += Math.abs(arr1[i] - arr2[i]); 
+        }
+        return totalDifference;
+    }
 };

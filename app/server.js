@@ -29,3 +29,6 @@ require("./routing/htmlRoutes")(app);
 app.listen(PORT, function() {
   console.log("App listening on PORT: " + PORT);
 });
+
+app.use(express.static("public"));
+
